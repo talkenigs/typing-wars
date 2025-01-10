@@ -1,10 +1,10 @@
 export default {
-  displayName: 'typing-race',
+  displayName: 'client',
   preset: '../../jest.preset.js',
   transform: {
     '^(?!.*\\.(js|jsx|ts|tsx|css|json)$)': '@nx/react/plugins/jest',
     '^.+\\.[tj]sx?$': ['babel-jest', { presets: ['@nx/react/babel'] }],
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
-  coverageDirectory: '../../coverage/apps/typing-race',
+  coverageDirectory: '../../coverage/apps/client',
 };
