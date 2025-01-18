@@ -15,8 +15,10 @@ const Login = () => {
     <div className="flex flex-col gap-4">
       <label htmlFor="">What's Your Name?</label>
       <input
+        autoFocus
         type="text"
         className="p-2 border border-gray-300 rounded text-black"
+        onKeyDown={(e) => e.key === 'Enter' && handleSignIn()}
         ref={nameRef}
       />
       <button

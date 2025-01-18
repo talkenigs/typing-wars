@@ -3,9 +3,12 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "start": "nx run-many --target=serve --projects='client,socket'",
-    "start:client": "nx run client:serve",
-    "start:socket": "nx run socket:serve"
+    "serve": "nx run-many --target=serve --projects='client,socket'",
+    "serve:client": "nx run client:serve",
+    "serve:socket": "nx run socket:serve",
+    "start:client:docker": "nx run client:serve --host=0.0.0.0",
+    "start:socket:docker": "nx run socket:serve --host=0.0.0.0",
+    "build:socket": "nx run socket:build"
   },
   "private": true,
   "dependencies": {

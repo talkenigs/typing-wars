@@ -1,0 +1,4 @@
+.nx
+.vscode
+node_modules
+!util/docker/web

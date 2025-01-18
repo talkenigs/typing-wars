@@ -1,4 +1,5 @@
 import {
+  ConnectedSocket,
   MessageBody,
   OnGatewayConnection,
   OnGatewayDisconnect,
@@ -6,10 +7,11 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
-import { Server } from 'socket.io';
+import { Server, Socket } from 'socket.io';
 import { defaultRoom, User } from '@typing-wars/types';
+import { Logger } from '@nestjs/common';
 
-let room = defaultRoom;
+const room = defaultRoom;
 
 const isUserExist = (user: User) =>
   room.users.find((roomUser) => user.name === roomUser.name);
@@ -18,6 +20,8 @@ const isUserExist = (user: User) =>
 export class ProgressGateway
   implements OnGatewayConnection, OnGatewayDisconnect
 {
+  private readonly logger = new Logger(ProgressGateway.name);
+
   @WebSocketServer()
   server: Server;
 
@@ -26,44 +30,52 @@ export class ProgressGateway
   }
 
   handleDisconnect() {
-    room = { users: [] };
+    console.log('disconnected');
   }
 
-  async sendUpdate(message) {
-    this.server.emit('updateProgress', { message });
-  }
-
-  async addRoomUser(user: User) {
-    console.log(room);
-    if (!isUserExist(user)) {
-      room.users.push(user);
-    }
-
-    this.server.emit('userLoggedIn', room);
+  async updateRoomProgress({ progress, user }) {
+    room.users.map((dbUser) => {
+      if (!user || !user.name) {
+        return dbUser;
+      }
+      if (dbUser.name === user.name) {
+        dbUser.progress = progress;
+        return;
+      }
+    });
     this.server.emit('roomUpdated', room);
   }
 
-  async createUser(user: User) {
+  async addUser(name: string, client: Socket) {
+    const user: User = {
+      name,
+      clientId: client.id,
+      progress: 0,
+    };
+
+    this.logger.log(isUserExist(user));
     if (!isUserExist(user)) {
       room.users.push(user);
     }
 
+    client.emit('userLoggedIn', user);
     this.server.emit('roomUpdated', room);
   }
 
   @SubscribeMessage('joined')
   async joinRoom(
+    @ConnectedSocket() client: Socket,
     @MessageBody()
-    user: User
+    { name }: { name: string }
   ) {
-    this.addRoomUser(user);
+    this.addUser(name, client);
   }
 
   @SubscribeMessage('updateProgress')
   async updateProgress(
     @MessageBody()
-    payload: string
+    { progress, user }: { progress: number; user: User }
   ) {
-    this.sendUpdate(payload);
+    this.updateRoomProgress({ progress, user });
   }
 }

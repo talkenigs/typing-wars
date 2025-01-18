@@ -5,13 +5,13 @@ import Layout from './Layout';
 
 const App = () => {
   return (
-    <AuthProvider>
-      <GameProvider>
-        <SocketProvider>
+    <SocketProvider>
+      <AuthProvider>
+        <GameProvider>
           <Layout />
-        </SocketProvider>
-      </GameProvider>
-    </AuthProvider>
+        </GameProvider>
+      </AuthProvider>
+    </SocketProvider>
   );
 };
 

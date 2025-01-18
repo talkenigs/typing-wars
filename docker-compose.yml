@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+  client:
+    restart: always
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: npm run start:client:docker
+    ports:
+      - 4200:4200
+    volumes:
+      - ./:/app
+      - mono-node-modules:/app/node_modules
+
+  socket:
+    restart: always
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: npm run start:socket:docker
+    ports:
+      - 3000:3000
+    volumes:
+      - ./:/app
+      - mono-node-modules:/app/node_modules
+
+volumes:
+  mono-node-modules: null

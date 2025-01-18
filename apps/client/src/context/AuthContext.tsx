@@ -11,7 +11,7 @@ import {
 
 type AuthContextPayload = {
   user: User | null;
-  setUser: Dispatch<SetStateAction<User>>;
+  setUser: Dispatch<SetStateAction<User | null>>;
 };
 
 export const AuthContext = createContext<AuthContextPayload | null>(null);

@@ -8,19 +8,15 @@ import { calculateAccuracyPercentage } from './utils/helpers';
 import Login from './components/Login';
 import { useAuthContext } from './context/AuthContext';
 import { useGameContext } from './context/GameProvider';
+import Listener from './listener/listener';
 
 const Layout = () => {
   const { user } = useAuthContext();
-  const {
-    words,
-    typed,
-    timeLeft,
-    errors,
-    state,
-    restart,
-    totalTyped,
-    room,
-  } = useGameContext();
+
+  const { words, typed, timeLeft, errors, state, restart, totalTyped, room } =
+  useGameContext();
+
+  Listener();
 
   if (!user) {
     return <Login />;
