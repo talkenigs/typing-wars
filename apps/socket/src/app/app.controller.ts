@@ -11,6 +11,6 @@ export class AppController {
 
   @Get()
   async handle() {
-    this.progressGateway.updateProgress()
+    // this.progressGateway.updateProgress()
   }
 }

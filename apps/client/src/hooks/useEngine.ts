@@ -1,32 +1,34 @@
-import { useCallback, useEffect, useState } from "react";
-import { countErrors, debug } from "../utils/helpers";
-import useCountdown from "./useCountdown";
-import useTypings from "./useTypings";
-import useWords from "./useWords";
+import { useCallback, useEffect, useState } from 'react';
+import { countErrors, debug } from '../utils/helpers';
+import useCountdown from './useCountdown';
+import useTypings from './useTypings';
+import useWords from './useWords';
+import { defaultRoom, Room } from '@typing-wars/types';
 
-export type State = "start" | "run" | "finish";
+export type State = 'start' | 'run' | 'finish';
 
 const NUMBER_OF_WORDS = 7;
 const COUNTDOWN_SECONDS = 30;
 
 const useEngine = () => {
-  const [state, setState] = useState<State>("start");
+  const [state, setState] = useState<State>('start');
   const { timeLeft, startCountdown, resetCountdown } =
     useCountdown(COUNTDOWN_SECONDS);
   const { words, updateWords } = useWords(NUMBER_OF_WORDS);
   const { cursor, typed, clearTyped, totalTyped, resetTotalTyped } = useTypings(
-    state !== "finish"
+    state !== 'finish'
   );
   const [errors, setErrors] = useState(0);
+  const [room, setRoom] = useState<Room>(defaultRoom);
 
-  const isStarting = state === "start" && cursor > 0;
+  const isStarting = state === 'start' && cursor > 0;
   const areWordsFinished = cursor === words.length;
 
   const restart = useCallback(() => {
-    debug("restarting...");
+    debug('restarting...');
     resetCountdown();
     resetTotalTyped();
-    setState("start");
+    setState('start');
     setErrors(0);
     updateWords();
     clearTyped();
@@ -41,16 +43,16 @@ const useEngine = () => {
   // as soon the user starts typing the first letter, we start
   useEffect(() => {
     if (isStarting) {
-      setState("run");
+      setState('run');
       startCountdown();
     }
   }, [isStarting, startCountdown]);
 
   // when the time is up, we've finished
   useEffect(() => {
-    if (!timeLeft && state === "run") {
-      debug("time is up...");
-      setState("finish");
+    if (!timeLeft && state === 'run') {
+      debug('time is up...');
+      setState('finish');
       sumErrors();
     }
   }, [timeLeft, state, sumErrors]);
@@ -61,14 +63,24 @@ const useEngine = () => {
    */
   useEffect(() => {
     if (areWordsFinished) {
-      debug("words are finished...");
+      debug('words are finished...');
       sumErrors();
       updateWords();
       clearTyped();
     }
   }, [clearTyped, areWordsFinished, updateWords, sumErrors]);
 
-  return { state, words, typed, errors, restart, timeLeft, totalTyped };
+  return {
+    state,
+    words,
+    typed,
+    errors,
+    restart,
+    timeLeft,
+    totalTyped,
+    room,
+    setRoom,
+  };
 };
 
 export default useEngine;
