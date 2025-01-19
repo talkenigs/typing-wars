@@ -31,7 +31,7 @@ services:
 
 networks:
   default:
-    external: true
+    driver: bridge
 
 volumes:
   mono-node-modules: null
