@@ -7,6 +7,8 @@ services:
     command: npm run start:client:docker
     ports:
       - 4200:4200
+    env_file:
+      - .env
     volumes:
       - ./:/app
       - mono-node-modules:/app/node_modules
