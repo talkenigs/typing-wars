@@ -12,6 +12,8 @@ services:
     volumes:
       - ./:/app
       - mono-node-modules:/app/node_modules
+    networks:
+      - default
 
   socket:
     restart: always
@@ -24,6 +26,8 @@ services:
     volumes:
       - ./:/app
       - mono-node-modules:/app/node_modules
+    networks:
+      - default
 
 networks:
   default:
