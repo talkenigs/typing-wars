@@ -25,5 +25,9 @@ services:
       - ./:/app
       - mono-node-modules:/app/node_modules
 
+networks:
+  default:
+    external: true
+
 volumes:
   mono-node-modules: null
